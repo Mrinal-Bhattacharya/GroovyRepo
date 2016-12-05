@@ -155,4 +155,27 @@ class ListSpec {
 		}
 		assert factorial == 1 * 1 * 2 * 3
 	}
+
+	@Test
+	void quicksort(){
+		GroovyList list=new GroovyList()
+		assert list.quickSort([]) == []
+		assert list.quickSort([1]) == [1]
+		assert list.quickSort([1, 2]) == [1, 2]
+		assert list.quickSort([2, 1]) == [1, 2]
+		assert list.quickSort([3, 1, 2]) == [1, 2, 3]
+		assert list.quickSort([3, 1, 2, 2]) == [1, 2, 2, 3]
+		assert list.quickSort([1.0f, 'a', 10, null]) == [null, 1.0f, 10, 'a']
+		assert list.quickSort('bca') == 'abc'.toList()
+	}
+
+	@Test
+	void proccessUrls(){
+		def urls = [new URL('http', 'myshop.com', 80, 'index.html'), new URL('https', 'myshop.com', 443, 'buynow.html'), new URL('ftp', 'myshop.com', 21, 'downloads')]
+		assert urls
+		.findAll{ it.port < 99 }
+		.collect{ it.file.toUpperCase() }
+		.sort()
+		.join(', ') == 'DOWNLOADS, INDEX.HTML'
+	}
 }
