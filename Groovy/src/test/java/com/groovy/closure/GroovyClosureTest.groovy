@@ -37,7 +37,9 @@ class GroovyClosureTest {
 	@Test
 	void passExternally(){
 		Map map = ['a':1, 'b':2]
-		Closure doubler = {key, value -> map[key] = value * 2 }
+		Closure doubler = { key, value ->
+			map[key] = value * 2
+		}
 		map.each(doubler)
 		assert map == ['a':2, 'b':4]
 	}
@@ -54,15 +56,21 @@ class GroovyClosureTest {
 	@Test
 	void closureInformation(){
 		GroovyClosure closure=new GroovyClosure()
-		assert closure.numParams { one -> } == 1
-		assert closure.numParams { one, two -> } == 2
-		assert closure.paramTypes { String s -> } == [String]
-		assert closure.paramTypes { Number n, Date d -> } == [Number, Date]
+		assert closure.numParams { one ->
+		} == 1
+		assert closure.numParams { one, two ->
+		} == 2
+		assert closure.paramTypes { String s ->
+		} == [String]
+		assert closure.paramTypes { Number n, Date d ->
+		} == [Number, Date]
 	}
 
 	@Test
 	void leftCurrying(){
-		def mult = { x, y -> return x * y }
+		def mult = { x, y ->
+			return x * y
+		}
 		def twoTimes = mult.curry(2)
 		assert twoTimes(5) == 10
 		def twoTime = { y -> mult 2, y }
@@ -71,7 +79,9 @@ class GroovyClosureTest {
 
 	@Test
 	void rightCurrying(){
-		def nCopies = { int n, String str -> str*n }
+		def nCopies = { int n, String str ->
+			str*n
+		}
 		def blah = nCopies.rcurry('bla')
 		assert blah(2) == 'blabla'
 		assert blah(2) == nCopies(2, 'bla')
@@ -79,7 +89,9 @@ class GroovyClosureTest {
 
 	@Test
 	void indexCurrying(){
-		def volume = { double l, double w, double h -> l*w*h }
+		def volume = { double l, double w, double h ->
+			l*w*h
+		}
 		def fixedWidthVolume = volume.ncurry(1, 2d)
 		assert volume(3d, 2d, 4d) == fixedWidthVolume(3d, 4d)
 		def fixedWidthAndHeight = volume.ncurry(1, 2d, 4d)
@@ -125,16 +137,36 @@ class GroovyClosureTest {
 	@Test
 	void memoization(){
 		def fib
-		fib = { long n -> n<2?n:fib(n-1)+fib(n-2) }
+		fib = { long n ->
+			n<2?n:fib(n-1)+fib(n-2)
+		}
 		long start=System.currentTimeMillis()
 		assert fib(15) == 610
 		long end=System.currentTimeMillis()
 		long firstCallTime=end-start
 		start=System.currentTimeMillis()
-		fib = { long n -> n<2?n:fib(n-1)+fib(n-2) }.memoize()
+		fib = {
+			long n ->
+			n<2?n:fib(n-1)+fib(n-2)
+		}.memoize()
 		end=System.currentTimeMillis()
 		assert fib(25) == 75025
 		long secondCallTime=end-start
 		assert secondCallTime<firstCallTime
+	}
+
+	@Test
+	void ownerAndThis(){
+		def x = {
+			def y = {
+				assert "GroovyClosureSpec"==this.toString(); println owner.toString()
+			}; y()
+		}
+		x()
+	}
+
+	@Override
+	public String toString() {
+		return "GroovyClosureSpec"
 	}
 }
