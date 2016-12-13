@@ -51,3 +51,24 @@ class ImplicitConstructor{
 		color=(String)list.getAt(1)
 	}
 }
+
+class MrBean {
+	String firstname, lastname
+	String getName(){
+		return "$firstname $lastname"
+	}
+}
+class DoublerBean {
+	public value
+	void setValue(value){
+		this.value = value
+	}
+	def getValue(){
+		value * 2
+	}
+}
+class ClassWithProperties {
+	def someProperty
+	public someField
+	private somePrivateField
+}

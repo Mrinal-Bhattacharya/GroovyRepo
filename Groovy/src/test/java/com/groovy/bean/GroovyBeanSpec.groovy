@@ -85,4 +85,43 @@ class GroovyBeanSpec {
 		ImplicitConstructor bean2= ["bean2", "white"]
 		assert "bean2"==bean2.name
 	}
+
+	@Test
+	void callingAccessors(){
+		def bean = new MrBean(firstname: 'Rowan')
+		bean.lastname = 'Atkinson'
+		assert 'Rowan Atkinson' == bean.name
+	}
+
+	@Test
+	void advancedAccessors(){
+		def bean = new DoublerBean(value: 100)
+		assert 200 == bean.value
+		assert 100 == bean.@value
+	}
+
+	@Test
+	void objectProperties(){
+		def obj = new ClassWithProperties()
+		def store = []
+		obj.properties.each { property ->
+			store += property.key
+			store += property.value
+		}
+		assert store.contains('someProperty')
+		assert store.contains('someField') == false
+		assert store.contains('somePrivateField') == false
+		assert store.contains('class')
+		assert obj.properties.size() == 2
+	}
+
+	@Test
+	void expando(){
+		def boxer = new Expando()
+		assert null == boxer.takeThis
+		boxer.takeThis = 'ouch!'
+		assert 'ouch!' == boxer.takeThis
+		boxer.fightBack = {times -> delegate.takeThis * times }
+		assert 'ouch!ouch!ouch!' == boxer.fightBack(3)
+	}
 }
