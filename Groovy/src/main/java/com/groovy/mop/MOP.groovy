@@ -22,3 +22,7 @@ class DynamicPretender {
 		whatToDo(name)
 	}
 }
+class MyGroovy1 { }
+class MyGroovy2 { }
+class MySuperGroovy { }
+class MySubGroovy extends MySuperGroovy { }
